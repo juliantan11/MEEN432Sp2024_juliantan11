@@ -1,0 +1,2 @@
+For our Matlab Code, we had the all the initial conditions coded so that we could adjust it for our Simulink model. The time steps and solver were coded as an array. The for loops in the code makes it so that everytime
+a fixed time step was chosen with the solver, it would plot the angular acceleration and velocity with for that respective time step and solver, and continue for each variable in the array till all variables were plotted. 
