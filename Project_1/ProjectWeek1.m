@@ -37,7 +37,7 @@ for i = 1:length(dT)
         ylabel('Angular Velocity [rad/s]');
 
         % Plot angular acceleration
-        subplot(length(dT), length(solvers)*2, subplot_index + length(solvers)*2); % Corrected index
+        subplot(length(dT), length(solvers)*2, subplot_index + length(solvers)*2); 
         plot(T, W_DOT);
         title(['Solver: ', char(solver), ', Time Step: ', num2str(dT_val)]); % Added title
         xlabel('Time [s]');
