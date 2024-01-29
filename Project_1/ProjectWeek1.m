@@ -2,7 +2,7 @@
 
 % Initial Conditions
 w_0 = 1; % Initial Angular Velocity [rad/s]
-A = 4; % Constant Applied Torque [N*m]
+A = 1; % Constant Applied Torque [N*m]
 b = 1; % Damping Coefficient [ N*m*s/rad]
 J = 1; % Rotational Inertia [kg*m^2]
 
