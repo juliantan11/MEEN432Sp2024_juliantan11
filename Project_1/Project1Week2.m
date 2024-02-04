@@ -1,6 +1,7 @@
 % Project Week 2
 solver = ["ode1", "ode4", "ode45", "ode23tb"];
 
+% Fixed Time Step Arrays
 ode1_dt = {}
 ode1_max_error = {}
 ode1_cpu_time = {}
@@ -9,6 +10,7 @@ ode4_dt = {}
 ode4_max_error = {}
 ode4_cpu_time = {}
 
+% Variable Time Step Arrays
 ode45_max_error = {}
 ode45_cpu_time = {}
 
