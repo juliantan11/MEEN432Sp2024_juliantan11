@@ -1,15 +1,5 @@
-% Initial Conditions
-w_0 = 1; % Initial Angular Velocity [rad/s]
-A = 1; % Constant Applied Torque [N*m]
-b = 1; % Damping Coefficient [ N*m*s/rad]
-J = 1; % Rotational Inertia [kg*m^2]
-
-dT = [0.001, 0.1, 1]; % Time Step [s]
-
-
-
 % Project Week 2
-solvers = ["ode1", "ode4", "ode45", "ode23tb"];
+solver = ["ode1", "ode4", "ode45", "ode23tb"];
 
 ode1_dt = {}
 ode1_max_error = {}
@@ -25,7 +15,7 @@ ode45_cpu_time = {}
 ode23tb_max_error = {}
 ode23tb_cpu_time = {}
 
-for i = 1:length(solvers)
+for i = 1:length(solver)
     if solver{i,1}, Solver == "ode1" or "ode4"
         dT = [0.001, 0.1, 1]; % Fixed Time Step Values [s]
         for j = 1:length(dT)
@@ -37,13 +27,44 @@ for i = 1:length(solvers)
                     for m = 1:length(J1)
                         w_0 = [10, 0.0]; % Initial Conditions [rad/s]
                         for n = 1:length(w_0)
-                            dT_val = j;
-                            A_val = k;
-                            b_val = l;
-                            J1_val = m;
-                            w_0_val = n;
-                            simout = sim("Project1Week2_.slx", "Solver", solver, "FixedStep", string(dT_val));
+                            % Initial Conditions
+                            solver_val = solver(i);
+                            dT_val = dT(j);
+                            A_val = A(k);
+                            b_val = b(l);
+                            J1_val = J1(m);
+                            w_0_val = w_0(n);
                             
+                            % Simulate the system
+                            simout = sim("Project1Week2_.slx", "Solver", solver_val, "FixedStep", string(dT_val));
+
+                            % Extract data
+                            W = simout.w.Data;
+                            W_DOT = simout.w_dot.Data;
+                            T = simout.tout;
+
+                            % Calculate subplot index
+                            subplot_index = (i - 1) * length(solvers) + j;
+                            
+                            % Plot angular velocity
+                            subplot(length(dT), length(solvers)*2, subplot_index);
+                            plot(T, W);
+                            title(['Solver: ', char(solver), ', Time Step: ', num2str(dT_val)]);
+                            xlabel('Time [s]');
+                            ylabel('Angular Velocity [rad/s]');
+                            
+                            % Plot angular acceleration
+                            subplot(length(dT), length(solvers)*2, subplot_index + length(solvers)*2); 
+                            plot(T, W_DOT);
+                            title(['Solver: ', char(solver), ', Time Step: ', num2str(dT_val)]); % Added title
+                            xlabel('Time [s]');
+                            ylabel('Angular Acceleration [rad/s^2]');
+                        end
+                    end
+                end
+            end
+        end
+    
     elseif srting(i) == "ode45" or "ode23tb"
         F = [0.1, 100]; % Frequency of Torque Values [rad/s]
         for i = 1:length(F)
@@ -52,44 +73,5 @@ for i = 1:length(solvers)
         
     else
         print("Error solver selection")
-    end
-end
-
-
-
-
-% Create figure for plotting
-figure;
-
-% Nested loops to iterate over time steps and solvers
-for i = 1:length(dT)
-    for j = 1:length(solvers)
-        solver = solvers(j);
-        dT_val = dT(i);
-
-        % Simulate the system
-        simout = sim("Project1Week2_.slx", "Solver", solver, "FixedStep", string(dT_val));
-
-        % Extract data
-        W = simout.w.Data;
-        W_DOT = simout.w_dot.Data;
-        T = simout.tout;
-
-        % Calculate subplot index
-        subplot_index = (i - 1) * length(solvers) + j;
-
-        % Plot angular velocity
-        subplot(length(dT), length(solvers)*2, subplot_index);
-        plot(T, W);
-        title(['Solver: ', char(solver), ', Time Step: ', num2str(dT_val)]);
-        xlabel('Time [s]');
-        ylabel('Angular Velocity [rad/s]');
-
-        % Plot angular acceleration
-        subplot(length(dT), length(solvers)*2, subplot_index + length(solvers)*2); 
-        plot(T, W_DOT);
-        title(['Solver: ', char(solver), ', Time Step: ', num2str(dT_val)]); % Added title
-        xlabel('Time [s]');
-        ylabel('Angular Acceleration [rad/s^2]');
     end
 end
