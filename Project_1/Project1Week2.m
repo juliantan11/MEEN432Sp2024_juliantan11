@@ -2,11 +2,11 @@
 solver = ["ode1", "ode4", "ode45", "ode23tb"];
 
 % Fixed Time Step Arrays
-ode1_dt = {}
+ode1_dT = {}
 ode1_max_error = {}
 ode1_cpu_time = {}
 
-ode4_dt = {}
+ode4_dT = {}
 ode4_max_error = {}
 ode4_cpu_time = {}
 
@@ -38,14 +38,30 @@ for i = 1:length(solver)
                             w_0_val = w_0(n);
                             
                             % Simulate the system
-                            simout = sim("Project1Week2_.slx", "Solver", solver_val, "FixedStep", string(dT_val));
+                            simout = sim("Project1Week1_.slx", "Solver", solver_val, "FixedStep", string(dT_val));
 
                             % Extract data
                             W = simout.w.Data;
                             W_DOT = simout.w_dot.Data;
                             T = simout.tout;
                             
+                            % Error Calculation
+                            % theory_w = 
+                            % w_error = theory_w - W
                             
+                            % CPU Time
+                            % 
+
+                            if solver_val == "ode1"
+                                ode1_dT.append(dT_val)
+                                % ode1_max_error.append(w_error)
+                                % ode1_cpu_time.append()
+                            elseif solver_val == "ode4"
+                                ode4_dT.append(dT_val)
+                                % ode4_max_error.append(w_error)
+                                % ode4_cpu_time.append()
+                            else
+                                print("Error solver appending loop")
                             
                             % Calculate subplot index
                             subplot_index = (i - 1) * length(solvers) + j;
@@ -72,10 +88,8 @@ for i = 1:length(solver)
     elseif string(i) == "ode45" or "ode23tb"
         F = [0.1, 100]; % Frequency of Torque Values [rad/s]
         for i = 1:length(F)
-            
-        
         
     else
-        print("Error solver selection")
+        print("Error solver selection loop")
     end
 end
