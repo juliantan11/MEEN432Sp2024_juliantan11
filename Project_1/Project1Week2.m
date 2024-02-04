@@ -2,20 +2,20 @@
 solver = ["ode1", "ode4", "ode45", "ode23tb"];
 
 % Fixed Time Step Arrays
-ode1_dT = {}
-ode1_max_error = {}
-ode1_cpu_time = {}
+ode1_dT = {};
+ode1_max_error = {};
+ode1_cpu_time = {};
 
-ode4_dT = {}
-ode4_max_error = {}
-ode4_cpu_time = {}
+ode4_dT = {};
+ode4_max_error = {};
+ode4_cpu_time = {};
 
 % Variable Time Step Arrays
-ode45_max_error = {}
-ode45_cpu_time = {}
+ode45_max_error = {};
+ode45_cpu_time = {};
 
-ode23tb_max_error = {}
-ode23tb_cpu_time = {}
+ode23tb_max_error = {};
+ode23tb_cpu_time = {};
 
 for i = 1:length(solver)
     if solver{i,1}, Solver == "ode1" or "ode4"
