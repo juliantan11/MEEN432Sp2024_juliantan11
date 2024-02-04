@@ -9,6 +9,19 @@ J = 1; % Rotational Inertia [kg*m^2]
 dT = [0.001, 0.1, 1]; % Time Step [s]
 solvers = ["ode1", "ode4"]; % Fixed Time Step Solver [Euler]
 
+for i = 1:length(solvers)
+    if string(i) == "ode1" or "ode4"
+        
+    elseif srting(i) == "ode45" or "ode23tb"
+        
+    else
+        print("Error solver selection")
+    end
+end
+
+
+
+
 % Create figure for plotting
 figure;
 
