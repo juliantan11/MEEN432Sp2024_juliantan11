@@ -42,7 +42,9 @@ for i = 1:length(solver)
                             W = simout.w.Data;
                             W_DOT = simout.w_dot.Data;
                             T = simout.tout;
-
+                            
+                            
+                            
                             % Calculate subplot index
                             subplot_index = (i - 1) * length(solvers) + j;
                             
@@ -65,7 +67,7 @@ for i = 1:length(solver)
             end
         end
     
-    elseif srting(i) == "ode45" or "ode23tb"
+    elseif string(i) == "ode45" or "ode23tb"
         F = [0.1, 100]; % Frequency of Torque Values [rad/s]
         for i = 1:length(F)
             
