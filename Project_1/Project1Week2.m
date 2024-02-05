@@ -37,26 +37,30 @@ for i = 1:length(solver_arr)
                             J1 = J1_arr(m);
                             F = 0;
                             w_0 = w_0_arr(n);
+                            isSin = 0; % Boolean for Sine Wave
                             
                             % Simulate the system
-                            simout = sim("Project1Week2_.slx", "Solver", solver, "FixedStep", string(dT));
-
+                            simout = sim("Project1Week2_Github.slx", "Solver", solver, "FixedStep", string(dT));
+                            
                             % Extract data
                             W = simout.w.Data;
                             W_DOT = simout.w_dot.Data;
                             T = simout.tout;
                             dT_simout = simout(i,1).SimulationMetadata.ModelInfo.SolverInfo.FixedStepSize;
-                            
+                            tau = simout(j,1).tau.Data;
+
                             % Error Calculation
-                            % theory_w = 
-                            % w_error = theory_w - W
+                            % theory_w = (tau/b)*(1 - exp(-b*T/J1)) + w_0*exp(-b*T/J1);
+                            % max_error = theory_w - W;
                             
                             % CPU Time
-                            % 
-
+                            start_time = cputime;
+                            pause(1)
+                            cpu_time = cputime - start_time;
+                            
                             ode1_dT = cat(1, ode1_dT, dT_simout);
-                            % ode1_max_error.append(w_error)
-                            % ode1_cpu_time.append()
+                            % ode1_max_error = cat(1, ode1_max_error, max_error_simout);
+                            % ode1_cpu_time = cat(1, ode1_cpu_time, cpu_time);
                             
                             % Calculate subplot index
                             %subplot_index = (i - 1) * length(solvers) + j;
@@ -98,9 +102,10 @@ for i = 1:length(solver_arr)
                             J1 = J1_arr(m);
                             F = 0;
                             w_0 = w_0_arr(n);
+                            isSin = 0; % Boolean for Sine Wave
                             
                             % Simulate the system
-                            simout = sim("Project1Week2_.slx", "Solver", solver, "FixedStep", string(dT));
+                            simout = sim("Project1Week2_Github.slx", "Solver", solver, "FixedStep", string(dT));
 
                             % Extract data
                             W = simout.w.Data;
@@ -159,9 +164,10 @@ for i = 1:length(solver_arr)
                             b = b_arr(l);
                             J1 = J1_arr(m);
                             w_0 = w_0_arr(n);
+                            isSin = 1; % Boolean for Sine Wave
                             
                             % Simulate the system
-                            simout = sim("Project1Week2_.slx", "Solver", solver, "FixedStep", string(dT));
+                            simout = sim("Project1Week2_Github.slx", "Solver", solver, "FixedStep", string(dT));
 
                             % Extract data
                             W = simout.w.Data;
@@ -185,6 +191,7 @@ for i = 1:length(solver_arr)
     elseif solver_arr{i,1} == "ode23tb"
         F = [0.1, 100]; % Frequency of Torque Values [rad/s]
         A_arr = [0, 100]; % Constant Torque Values [N*m]
+        isSin = 1; % Boolean for Sine Wave
         b_arr = [10, 0.1]; % Damping Coefficient [N*m*s/rad]
         J1_arr = [100, 0.01]; % Rotational Inertia [kg*m^2]
         w_0_arr = [10, 0.0]; % Initial Conditions [rad/s]
@@ -200,9 +207,10 @@ for i = 1:length(solver_arr)
                             b = b_arr(l);
                             J1 = J1_arr(m);
                             w_0 = w_0_arr(n);
+                            isSin = 1; % Boolean for Sine Wave
                             
                             % Simulate the system
-                            simout = sim("Project1Week2_.slx", "Solver", solver, "FixedStep", string(dT));
+                            simout = sim("Project1Week2_Github.slx", "Solver", solver, "FixedStep", string(dT));
 
                             % Extract data
                             W = simout.w.Data;
@@ -227,5 +235,3 @@ for i = 1:length(solver_arr)
         
     end
 end
-
-print(ode1_dT)
