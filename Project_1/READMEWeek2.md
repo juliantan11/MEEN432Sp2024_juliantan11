@@ -1,1 +1,1 @@
-
+This week 2 assignment was done as a group effort by Cameron Pinkerton, Hunter Aschen, and Julian Tan. For our Matlab Code, we had the all the initial conditions, fixed time steps, frequencices, and solvers coded into arrays. There are arrays for all of the desired output data to be concatenated into after they are solved in the loop. The for loops were used to iterate through the simulaitons for all of the combinations of the values provided for all solver types. 
