@@ -38,6 +38,9 @@ for i = 1:length(solver_arr)
                             F = 0;
                             w_0 = w_0_arr(n);
                             isSin = 0; % Boolean for Sine Wave
+
+                            % CPU Time Before
+                            start_time = cputime;
                             
                             % Simulate the system
                             simout = sim("Project1Week2_Github.slx", "Solver", solver, "FixedStep", string(dT));
@@ -53,10 +56,9 @@ for i = 1:length(solver_arr)
                             % theory_w = (tau/b)*(1 - exp(-b*T/J1)) + w_0*exp(-b*T/J1);
                             % max_error = theory_w - W;
                             
-                            % CPU Time
-                            start_time = cputime;
-                            pause(1)
-                            cpu_time = cputime - start_time;
+                            % CPU Time After
+                            end_time = cputime;
+                            cpu_time = end_time - start_time;
                             
                             ode1_dT = cat(1, ode1_dT, dT_simout);
                             % ode1_max_error = cat(1, ode1_max_error, max_error_simout);
