@@ -35,6 +35,12 @@ for i = 1:length(solver_arr)
                             % Extract data
                             W = simout.w.Data;
                             T = simout.tout;
+
+                            % Error Calculation
+                            W_len = length(W)
+                            dt = linspace(0, 25, W_len)
+                            theory_w = theory_w(dt, A, b, w_0, J1)
+                            error = cat(1, error, max(W - theory_w));
                             
                             % Plot angular velocity
                             %figure;
@@ -66,7 +72,9 @@ for i = 1:length(solver_arr)
 end
 
 % Theory Omega
-%function theory_w(dt, tau, )
+function theory_w(dt, tau, b, w_0, J1)
+    theory_w = (tau/b)*(1 - exp(-b*T/J1)) + w_0*exp(-b*T/J1);
+end
 
 % Display results
 disp('ode1 results:');
