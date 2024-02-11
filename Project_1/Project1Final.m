@@ -79,7 +79,7 @@ for i = 1:length(solver_arr)
                             % Simulate the system
                             dT = 0.001;
                             simout = sim('Project1Week2_.slx', ...
-                                'Solver', solver, 'FixedStep', num2str(dT));
+                                'Solver', solver);
 
                             % End CPU time
                             cpu_time_end = cputime;
@@ -202,14 +202,14 @@ function theory_w = theory_omega(dt, tau, b, w_0, J1, isSin)
         theory_w = (tau/b)*(1 - exp(-b*dt/J1)) + w_0*exp(-b*dt/J1);
     else
         % % Simulate the system
-        % solver = 'ode4';
-        % dT = 0.001;
-        % simout = sim('Project1Week2_.slx', ...
-        %     'Solver', solver, 'FixedStep', num2str(dT));
-        % 
-        % % Extract data
-        % W_ode4 = simout.w.Data;
-        % 
+        solver = 'ode4';
+        dT = 0.001;
+        simout = sim('Project1Week2_.slx', ...
+            'Solver', solver, 'FixedStep', num2str(dT));
+
+        % Extract data
+        W_ode4 = simout.w.Data;
+
         W_ode4 = (tau/b)*(1 - exp(-b*dt/J1)) + w_0*exp(-b*dt/J1);
         theory_w = W_ode4;
     end
