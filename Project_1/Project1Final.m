@@ -321,10 +321,10 @@ for i = 1:length(solver_arr)
 end
 
 figure;
-scatter(omega2,time, '-o', 'DisplayName', 'k=10')
+scatter(out.total,time, '-o', 'DisplayName', 'k=10')
 hold on;
-scatter(omega2,time, 's', 'DiplayName', 'k=100' )
-scatter(omega2, time, 'd', 'DisplayName', 'k=1000')
+scatter(out.total,time, 's', 'DiplayName', 'k=100' )
+scatter(out.total, time, 'd', 'DisplayName', 'k=1000')
 xlabel('Time')
 ylabel('Shaft Speed')
 title('Shaft Speed vs. Time')
@@ -332,9 +332,9 @@ legend('show')
 grid on;
 
 figure;
-scatter(omega2,time, '-o', 'DisplayName', 'torque=1')
+scatter(out.total,time, '-o', 'DisplayName', 'torque=1')
 hold on;
-scatter(omega2,time, 's', 'DiplayName', 'torque=100' )
+scatter(out.total,time, 's', 'DiplayName', 'torque=100' )
 xlabel('Time')
 ylabel('Shaft Speed')
 title('Shaft Speed vs. Time')
