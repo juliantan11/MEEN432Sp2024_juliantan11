@@ -318,3 +318,13 @@ for i = 1:length(solver_arr)
     end
 end
 
+figure;
+scatter(omega2,time, '-o', 'DisplayName', 'k=10')
+hold on;
+scatter(omega2,time, 's', 'DiplayName', 'k=100' )
+scatter(omega2, time, 'd', 'DisplayName', 'k=1000')
+xlabel('Time')
+ylabel('Shaft Speed')
+title('Shaft Speed vs. Time')
+legend('show')
+grid on;
