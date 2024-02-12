@@ -328,3 +328,13 @@ ylabel('Shaft Speed')
 title('Shaft Speed vs. Time')
 legend('show')
 grid on;
+
+figure;
+scatter(omega2,time, '-o', 'DisplayName', 'torque=1')
+hold on;
+scatter(omega2,time, 's', 'DiplayName', 'torque=100' )
+xlabel('Time')
+ylabel('Shaft Speed')
+title('Shaft Speed vs. Time')
+legend('show')
+grid on;
