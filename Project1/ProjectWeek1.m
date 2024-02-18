@@ -19,7 +19,7 @@ for i = 1:length(dT)
         dT_val = dT(i);
 
         % Simulate the system
-        simout = sim("ProjectWeek_1.slx", "Solver", solver, "FixedStep", string(dT_val));
+        simout = sim("ProjectWeek1_.slx", "Solver", solver, "FixedStep", string(dT_val));
 
         % Extract data
         W = simout.w.Data;
