@@ -96,7 +96,7 @@ for i = 1:num_waypoints
     patch(car_x_array,car_y_array,'b')
     
     % Plotting the Car Path
-    plot(x_track_array, y_track_array, 'r--', 'LineWidth', 1);
+    animated_line = animatedline(x_track_array, y_track_array,'Color','r','LineWidth',1);
 end
 
 % Set axis limits
