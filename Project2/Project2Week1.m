@@ -112,11 +112,6 @@ plot(x_track_array, y_track_array, 'k', 'LineWidth', track_width);
 hold on;
 
 for i = 0:num_waypoints
-    % Plotting the Car
-    car_x_array = [car_RF_x_array(i+1),car_RR_x_array(i+1),car_LR_x_array(i+1),car_LF_x_array(i+1)]; % Combines X Coordinates of Car for Plotting
-    car_y_array = [car_RF_y_array(i+1),car_RR_y_array(i+1),car_LR_y_array(i+1),car_LF_y_array(i+1)]; % Combines Y Coordinates of Car for Plotting
-    patch(car_x_array,car_y_array,'c');
-    
     % Plotting the Car Path
     if i == 0 % Initial Start Position of Car at (0,0)
         car_center_x_iter_array = [car_center_x_array(1),car_center_x_array(i+1)];
@@ -126,6 +121,11 @@ for i = 0:num_waypoints
         car_center_y_iter_array = [car_center_y_array(i),car_center_y_array(i+1)];
     end
     animated_line = animatedline(car_center_x_iter_array, car_center_y_iter_array,'Color','r','LineWidth',1);
+
+    % Plotting the Car
+    car_x_array = [car_RF_x_array(i+1),car_RR_x_array(i+1),car_LR_x_array(i+1),car_LF_x_array(i+1)]; % Combines X Coordinates of Car for Plotting
+    car_y_array = [car_RF_y_array(i+1),car_RR_y_array(i+1),car_LR_y_array(i+1),car_LF_y_array(i+1)]; % Combines Y Coordinates of Car for Plotting
+    patch(car_x_array,car_y_array,'c');
 end
 
 % Set axis limits
