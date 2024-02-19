@@ -17,6 +17,8 @@ y_track_array = zeros(1,num_waypoints+1); % Y Track Coordinates (Updated from 0 
 theta_track_array = zeros(1,num_waypoints+1); % Angle Track Coordinates (Updated from 0 as code runs)
 
 % Car Coordinates
+car_center_x_array = zeros(1,num_waypoints+1); % Car RF X Coordinates (Updated from 0 as code runs)
+car_center_y_array = zeros(1,num_waypoints+1); % Car RF Y Coordinates (Updated from 0 as code runs)
 car_RF_x_array = zeros(1,num_waypoints+1); % Car RF X Coordinates (Updated from 0 as code runs)
 car_RR_x_array = zeros(1,num_waypoints+1); % Car RR X Coordinates (Updated from 0 as code runs)
 car_LF_x_array = zeros(1,num_waypoints+1); % Car LF X Coordinates (Updated from 0 as code runs)
@@ -32,6 +34,8 @@ for i = 0:num_waypoints
         x_track_array(i+1) = 0; % X Coordinate of Track Instantaneously
         y_track_array(i+1) = 0; % Y Coordinate of Track Instantaneously
         theta_track_array(i+1) = 0; % Angle of Track Curvature Instantaneously
+        car_center_x_array(i+1) = 0; % X Coordinate of Car Instantaneously
+        car_center_y_array(i+1) = 0; % Y Coordinate of Car Instantaneously
         car_RF_x_array(i+1) = car_length; % X Coordinate RF of Car Instantaneously
         car_RR_x_array(i+1) = -car_length; % X Coordinate RR of Car Instantaneously
         car_LF_x_array(i+1) = car_length; % X Coordinate LF of Car Instantaneously
@@ -44,6 +48,8 @@ for i = 0:num_waypoints
         x_track_array(i+1) = (i)*delta_s;
         y_track_array(i+1) = 0;
         theta_track_array(i+1) = 0;
+        car_center_x_array(i+1) = (i)*delta_s;
+        car_center_y_array(i+1) = 0;
         car_RF_x_array(i+1) = (i)*delta_s + car_length;
         car_RR_x_array(i+1) = (i)*delta_s - car_length;
         car_LF_x_array(i+1) = (i)*delta_s + car_length;
@@ -57,19 +63,23 @@ for i = 0:num_waypoints
         theta_track_array(i+1) = theta_track_array(i) + delta_theta;
         x_track_array(i+1) = straightaway_length + turn_radius*sin(theta_track_array(i+1));
         y_track_array(i+1) = turn_radius - turn_radius*cos(theta_track_array(i+1));
-        car_RF_x_array(i+1) = straightaway_length + (turn_radius + car_width)*sin(theta_track_array(i+1));
-        car_RR_x_array(i+1) = straightaway_length + (turn_radius + car_width)*sin(theta_track_array(i+1));
-        car_LF_x_array(i+1) = straightaway_length + (turn_radius - car_width)*sin(theta_track_array(i+1));
-        car_LR_x_array(i+1) = straightaway_length + (turn_radius - car_width)*sin(theta_track_array(i+1));
-        car_RF_y_array(i+1) = turn_radius - (turn_radius + car_width)*cos(theta_track_array(i+1));
-        car_RR_y_array(i+1) = turn_radius - (turn_radius + car_width)*cos(theta_track_array(i+1));
-        car_LF_y_array(i+1) = turn_radius - (turn_radius - car_width)*cos(theta_track_array(i+1));
-        car_LR_y_array(i+1) = turn_radius - (turn_radius - car_width)*cos(theta_track_array(i+1));
+        car_center_x_array(i+1) = straightaway_length + turn_radius*sin(theta_track_array(i+1));
+        car_center_y_array(i+1) = turn_radius - turn_radius*cos(theta_track_array(i+1));
+        car_RF_x_array(i+1) = straightaway_length + turn_radius*sin(theta_track_array(i+1)) + car_length;
+        car_RR_x_array(i+1) = straightaway_length + turn_radius*sin(theta_track_array(i+1)) - car_length;
+        car_LF_x_array(i+1) = straightaway_length + turn_radius*sin(theta_track_array(i+1)) + car_length;
+        car_LR_x_array(i+1) = straightaway_length + turn_radius*sin(theta_track_array(i+1)) - car_length;
+        car_RF_y_array(i+1) = turn_radius - turn_radius*cos(theta_track_array(i+1)) + car_width;
+        car_RR_y_array(i+1) = turn_radius - turn_radius*cos(theta_track_array(i+1)) + car_width;
+        car_LF_y_array(i+1) = turn_radius - turn_radius*cos(theta_track_array(i+1)) - car_width;
+        car_LR_y_array(i+1) = turn_radius - turn_radius*cos(theta_track_array(i+1)) - car_width;
     % Back Straightaway
     elseif (num_waypoints/2 < i) && (i <= num_waypoints*(3/4)) % Points from (900,400) to (0,400)
         x_track_array(i+1) = straightaway_length - (i-60)*delta_s;
         y_track_array(i+1) = 2 * turn_radius;
         theta_track_array(i+1) = 0;
+        car_center_x_array(i+1) = straightaway_length - (i-60)*delta_s;
+        car_center_y_array(i+1) = 2 * turn_radius;
         car_RF_x_array(i+1) = straightaway_length - (i-60)*delta_s - car_length;
         car_RR_x_array(i+1) = straightaway_length - (i-60)*delta_s + car_length;
         car_LF_x_array(i+1) = straightaway_length - (i-60)*delta_s - car_length;
@@ -83,14 +93,16 @@ for i = 0:num_waypoints
         theta_track_array(i+1) = theta_track_array(i) + delta_theta;
         x_track_array(i+1) = -turn_radius*sin(theta_track_array(i+1));
         y_track_array(i+1) = turn_radius + turn_radius*cos(theta_track_array(i+1));
-        car_RF_x_array(i+1) = straightaway_length + (turn_radius + car_width)*sin(theta_track_array(i+1));
-        car_RR_x_array(i+1) = straightaway_length + (turn_radius + car_width)*sin(theta_track_array(i+1));
-        car_LF_x_array(i+1) = straightaway_length + (turn_radius - car_width)*sin(theta_track_array(i+1));
-        car_LR_x_array(i+1) = straightaway_length + (turn_radius - car_width)*sin(theta_track_array(i+1));
-        car_RF_y_array(i+1) = turn_radius - (turn_radius + car_width)*cos(theta_track_array(i+1));
-        car_RR_y_array(i+1) = turn_radius - (turn_radius + car_width)*cos(theta_track_array(i+1));
-        car_LF_y_array(i+1) = turn_radius - (turn_radius - car_width)*cos(theta_track_array(i+1));
-        car_LR_y_array(i+1) = turn_radius - (turn_radius - car_width)*cos(theta_track_array(i+1));
+        car_center_x_array(i+1) = -turn_radius*sin(theta_track_array(i+1));
+        car_center_y_array(i+1) = turn_radius + turn_radius*cos(theta_track_array(i+1));
+        car_RF_x_array(i+1) = -turn_radius*sin(theta_track_array(i+1)) - car_length;
+        car_RR_x_array(i+1) = -turn_radius*sin(theta_track_array(i+1)) + car_length;
+        car_LF_x_array(i+1) = -turn_radius*sin(theta_track_array(i+1)) - car_length;
+        car_LR_x_array(i+1) = -turn_radius*sin(theta_track_array(i+1)) + car_length;
+        car_RF_y_array(i+1) = turn_radius + turn_radius*cos(theta_track_array(i+1)) - car_width;
+        car_RR_y_array(i+1) = turn_radius + turn_radius*cos(theta_track_array(i+1)) - car_width;
+        car_LF_y_array(i+1) = turn_radius + turn_radius*cos(theta_track_array(i+1)) + car_width;
+        car_LR_y_array(i+1) = turn_radius + turn_radius*cos(theta_track_array(i+1)) + car_width;
     end
 end
 
@@ -101,12 +113,19 @@ hold on;
 
 for i = 0:num_waypoints
     % Plotting the Car
-    car_x_array = [car_RF_x_array(i+1),car_RR_x_array(i+1),car_LR_x_array(i+1),car_LF_x_array(i+1)];
-    car_y_array = [car_RF_y_array(i+1),car_RR_y_array(i+1),car_LR_y_array(i+1),car_LF_y_array(i+1)];
-    patch(car_x_array,car_y_array,'b');
+    car_x_array = [car_RF_x_array(i+1),car_RR_x_array(i+1),car_LR_x_array(i+1),car_LF_x_array(i+1)]; % Combines X Coordinates of Car for Plotting
+    car_y_array = [car_RF_y_array(i+1),car_RR_y_array(i+1),car_LR_y_array(i+1),car_LF_y_array(i+1)]; % Combines Y Coordinates of Car for Plotting
+    patch(car_x_array,car_y_array,'c');
     
     % Plotting the Car Path
-    animated_line = animatedline(x_track_array, y_track_array,'Color','r','LineWidth',1);
+    if i == 0 % Initial Start Position of Car at (0,0)
+        car_center_x_iter_array = [car_center_x_array(1),car_center_x_array(i+1)];
+        car_center_y_iter_array = [car_center_y_array(1),car_center_y_array(i+1)];
+    else % Position of Car
+        car_center_x_iter_array = [car_center_x_array(i),car_center_x_array(i+1)];
+        car_center_y_iter_array = [car_center_y_array(i),car_center_y_array(i+1)];
+    end
+    animated_line = animatedline(car_center_x_iter_array, car_center_y_iter_array,'Color','r','LineWidth',1);
 end
 
 % Set axis limits
