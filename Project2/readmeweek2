@@ -1,0 +1,1 @@
+The simulink provided has been modified to create psi real vs. psi desired parameters. We added inputs to the driver model through a psi plug in from the other model. We then proceeded to code the path of the driver utilizing the psi desired and psi real paramters so that the driver will follow the track.
