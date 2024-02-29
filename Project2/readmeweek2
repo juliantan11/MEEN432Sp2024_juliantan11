@@ -1,1 +1,0 @@
-The simulink provided has been modified to input psi real from other components of the model, calculate psi desired, and import car data specs. We then proceeded to code the path of the driver utilizing the psi desired and psi real parameters so that the driver would follow the track.
