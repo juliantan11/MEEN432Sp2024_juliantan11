@@ -1,3 +1,8 @@
+%%% PROJECT 2 PARAMETERS %%% 
+% The following parameters are to be used for Project 2, and some will be
+% used for Project 3 which will be commented out at the bottom of the
+% script. 
+
 % Vehicle Parameters
 carData.Inertia = 1600; % kg m^2  -  Car Inertia
 carData.Mass = 1000; % kg      -  Car Mass 
@@ -20,67 +25,30 @@ carData.lf = 1.0; % m - Distance from CG to front axis
 carData.radius = 0.3; % m - Radius of tires
 
 % Track Specs
-track.radius = 200; % Radius of Curves
-track.width = 15; % Width of the Track
-track.l_straightaways = 900; % Length of Straightaways
+track.straightaway_length = 900; % Length of Track Straightaways [m]
+track.radius = 200; % Radius of Track Turns [m]
+turn_angle = pi; % Angle of Turn (From Entry to Exit) [rad]
+track.width = 15; % Width of Track [m]
+car_width = 1; % Width of Car [m]
+car_length = 2.5; % Length of Car (From Center) [m]
+
+carData.understeerCoeff = ... % Understeering Coefficient 
+    carData.Mass / ((carData.lr + carData.lf) * track.radius) ...
+      * (carData.lr / carData.Calpha_f - ...
+         carData.lf / carData.Calpha_r);
+
+carData.maxAlpha = 4 / 180 * pi; % Max Alpha Angle for Tires
+
+carData.vxd = 10.0; % m/s - Desired Velocity in X
+carData.vx_threshold1 = 0.1; % m/s - Threshold for Velocity in X
 
 % Waypoint Setup
 num_waypoints = 120; % Number of Waypoints for Track
-delta_s = (2*track.l_straightaways)/(num_waypoints/2); % Change in Distance in Track Straightaways (30 for 120) [m]
-delta_theta = (2*pi)/(num_waypoints/2); % Change in Angle in Track Turns (pi/30 for 120) [rad]
+delta_s = (2*track.straightaway_length)/(num_waypoints/2); % Change in Distance in Track Straightaways (30 for 120) [m]
+delta_theta = (2*turn_angle)/(num_waypoints/2); % Change in Angle in Track Turns (pi/30 for 120) [rad]
 
-% Initialize arrays to store X, Y coordinates, and time
-X = zeros(1, num_waypoints+1);
-Y = zeros(1, num_waypoints+1);
-time = zeros(1, num_waypoints+1);
-
-% Simulate the vehicle going around the track
-for i = 0:num_waypoints
-    % Calculate X and Y coordinates
-    if i <= num_waypoints/4
-        X(i+1) = i * delta_s;
-        Y(i+1) = 0;
-    elseif i <= num_waypoints/2
-        theta = (i - num_waypoints/4) * delta_theta;
-        X(i+1) = track.l_straightaways + track.radius * sin(theta);
-        Y(i+1) = track.radius - track.radius * cos(theta);
-    elseif i <= num_waypoints*(3/4)
-        X(i+1) = track.l_straightaways - (i - num_waypoints/2) * delta_s;
-        Y(i+1) = 2 * track.radius;
-    else
-        theta = (i - num_waypoints/2) * delta_theta;
-        X(i+1) = -track.radius * sin(theta);
-        Y(i+1) = track.radius + track.radius * cos(theta);
-    end
-    
-    % Calculate time (for simplicity, assuming constant speed)
-    time(i+1) = i; % Adjust as needed based on your simulation
-    
-    % Plot the track and vehicle
-    plot(X, Y, 'k', 'LineWidth', track.width);
-    hold on;
-    plot(X(i+1), Y(i+1), 'ro'); % Plot vehicle position
-    hold off;
-    axis equal;
-    xlabel('X (m)');
-    ylabel('Y (m)');
-    title('Vehicle Going Around the Track');
-    drawnow;
-end
-
-% Run raceStat function to analyze the data
-raceStats = raceStat(X, Y, time, track);
-
-% Display results
-disp('Number of loops completed: ');
-disp(raceStats.loops);
-disp('Completion time: ');
-disp(raceStats.tloops(end)); % Assuming last element in tloops is the completion time
-if isempty(raceStats.leftTrack.X)
-    disp('Vehicle stayed on track.');
-else
-    disp('Vehicle went off track.');
-end
+% Time Start
+start_time = cputime;
 
 % Plot Setup of Track and Car
 xpath = zeros(1,num_waypoints+1); % X Track Coordinates (Updated from 0 as code runs)
@@ -102,12 +70,12 @@ for i = 0:num_waypoints
     % Turns 1 & 2
     elseif (num_waypoints/4 < i) && (i <= num_waypoints/2) % Points from (900,0) to (900,400)
         thetapath(i+1) = thetapath(i) + delta_theta;
-        xpath(i+1) = straightaway_length + track.radius*sin(thetapath(i+1));
+        xpath(i+1) = track.straightaway_length + track.radius*sin(thetapath(i+1));
         ypath(i+1) = track.radius - track.radius*cos(thetapath(i+1));
         
     % Back Straightaway
     elseif (num_waypoints/2 < i) && (i <= num_waypoints*(3/4)) % Points from (900,400) to (0,400)
-        xpath(i+1) = straightaway_length - (i-60)*delta_s;
+        xpath(i+1) = track.straightaway_length - (i-60)*delta_s;
         ypath(i+1) = 2 * track.radius;
         thetapath(i+1) = 0;
         
@@ -120,6 +88,27 @@ for i = 0:num_waypoints
     end
 end
 
+% Run raceStat function to analyze the data
+simdata = sim('Project2Final_.slx');
+X = simdata.X.signals.values;
+Y = simdata.Y.signals.values;
+time = simdata.X.time;
+
+for i = 1:length(X)
+    raceStats = raceStat(X(i), Y(i), time(i), track);
+end
+
+% Display results
+disp('Number of loops completed: ');
+disp(raceStats.loops);
+disp('Completion time: ');
+disp(raceStats.tloops(end)); % Assuming last element in tloops is the completion time
+if isempty(raceStats.leftTrack.X)
+    disp('Vehicle stayed on track.');
+else
+    disp('Vehicle went off track.');
+end
+
 % Plotting the Track
 figure;
 plot(xpath, ypath, 'k', 'LineWidth', track.width);
@@ -130,7 +119,7 @@ carpath = animatedline('Color','r');
 
 % Set axis limits
 axis equal;
-axis([-100, straightaway_length + 100, -50, 2 * track.radius + 50]);
+axis([-100, track.straightaway_length + 100, -50, 2 * track.radius + 50]);
 
 % Add labels and title
 xlabel('X (m)');
@@ -159,8 +148,7 @@ for i = 0:num_waypoints
         
     % Turns 1 & 2
     elseif (num_waypoints/4 < i) && (i <= num_waypoints/2) % Points from (900,0) to (900,400)
-        carpos = rotate(carpos'-[xpath(i+1);ypath(i+1)], 0)' + [xpath(i+1);ypath(i+1)]'; % Plot Car in Turns
-
+        carpos = [rotate(xpath(i+1) - w/2, thetapath(i) + delta_theta), rotate(ypath(i+1) - w, thetapath(i) + delta_theta); rotate(xpath(i+1) + w/2, thetapath(i) + delta_theta), rotate(ypath(i+1) - w, thetapath(i) + delta_theta); rotate(xpath(i+1) + w/2, thetapath(i) + delta_theta), rotate(ypath(i+1) + w, thetapath(i) + delta_theta); rotate(xpath(i+1) - w/2, thetapath(i) + delta_theta), rotate(ypath(i+1) + w, thetapath(i) + delta_theta)]; % Plot Car in Turns
         
     % Back Straightaway
     elseif (num_waypoints/2 < i) && (i <= num_waypoints*(3/4)) % Points from (900,400) to (0,400)
@@ -168,8 +156,7 @@ for i = 0:num_waypoints
         
     % Turns 3 & 4
     else  % Points from (0,400) to (0,0)
-        carpos = rotate(carpos'-[xpath(i+1);ypath(i+1)], 0)' + [xpath(i+1);ypath(i+1)]'; % Plot Car in Turns
-
+        carpos = [rotate(xpath(i+1) - w/2, thetapath(i) + delta_theta), rotate(ypath(i+1) - w, thetapath(i) + delta_theta); rotate(xpath(i+1) + w/2, thetapath(i) + delta_theta), rotate(ypath(i+1) - w, thetapath(i) + delta_theta); rotate(xpath(i+1) + w/2, thetapath(i) + delta_theta), rotate(ypath(i+1) + w, thetapath(i) + delta_theta); rotate(xpath(i+1) - w/2, thetapath(i) + delta_theta), rotate(ypath(i+1) + w, thetapath(i) + delta_theta)]; % Plot Car in Turns
         
     end
 
@@ -179,14 +166,6 @@ for i = 0:num_waypoints
     drawnow
 end
 
-hold off
-
-% The following lines of code should be moved below the last function definition
-XYposplot = sim('Project2Week2_.slx');
-
-plot(XYposplot)
-
-% Move this below all function definitions
 function raceStats = raceStat(X,Y,t,path)
 %========================================================
 % 
@@ -213,11 +192,12 @@ prev_section = 6;
 loops = -1;
 j = 0;
 k = 0;
+tloops = [];
 Xerr = [];
 Yerr = [];
 terr = [];
 for i = 1:length(X)
-    if X(i) < path.l_straightaways
+    if X(i) < path.straightaway_length
         if X(i) >= 0
             if Y(i) < path.radius
                 section = 1;
@@ -267,7 +247,7 @@ switch section
             yesorno = 0;
         end
     case {2, 3}
-        rad = sqrt((x - path.l_straightaways)^2 + (y - path.radius)^2); % Corrected field name
+        rad = sqrt((x - path.straightaway_length)^2 + (y - path.radius)^2);
         if ((rad < path.radius + path.width) && ...
                 (rad > path.radius - path.width))
             yesorno = 1;
@@ -301,3 +281,16 @@ end
 function y = TF(psi)
 y = [cos(psi), sin(psi); -sin(psi), cos(psi)];
 end
+
+
+%%% PROJECT 3 EXTRA INFORMATION %%%
+% Longitudinal Dynamics Properties
+% carData.C0 = 0.0041;         % N - Static Friction Coefficient 
+% carData.C1 = 0.000066;       % N/(m/s) - Rolling Friction Coefficient
+
+% Parameters for Calculation of C2
+% Rho =1.225;          % Kg/m^3 - Density of Atmosphere
+% A  = 2.32;           % m^2 - Projected Area
+% Cd = 0.36;           % unitless - Drag Coefficient
+% carData.C2 = 0.5*Rho*A*Cd; % N/(m/s)^2 - Aerodynamic Drag Coefficient
+
